@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "763603420337",
+    "project_id": "ahmedzoalashop",
+    "storage_bucket": "ahmedzoalashop.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:763603420337:android:c108f5b6d8c0477d31ce90",
+        "android_client_info": {
+          "package_name": "com.example.ahmed_zoala_shop"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATfaUxnv6vIG-ErdO6H7PdpE9r7Rx732o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
