@@ -27,7 +27,6 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    final themee = Provider.of<Themey>(context);
     return  MultiProvider(
         providers: [
         ChangeNotifierProvider(create: (_) => Themey()),
@@ -36,7 +35,6 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: themee.mode == "Dark" ? ThemeData.dark() : null,
       home: StreamBuilder(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {

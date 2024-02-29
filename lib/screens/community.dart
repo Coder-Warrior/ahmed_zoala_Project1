@@ -20,6 +20,9 @@ class _CommunityState extends State<Community> {
   final msgController = TextEditingController();
   Map<String, dynamic> theDataOfCurrentUser = {};
   bool gettingTheDataOfCurrentUser = false;
+  ScrollController _controller = ScrollController();
+  bool _isVisible = true;
+
   getTheDataOfCurrentUser() async {
     setState(() {
       gettingTheDataOfCurrentUser = true;
@@ -73,7 +76,9 @@ class _CommunityState extends State<Community> {
   @override
     void initState() {
     super.initState();
-    // استدعاء الدالة عند فتح الصفحة
+
+    _controller = ScrollController();
+
     getTheDataOfCurrentUser();
        Future.delayed(Duration.zero, () {
        Provider.of<BlockSafety>(context, listen: false).getBlockState();
@@ -93,7 +98,6 @@ class _CommunityState extends State<Community> {
   final safetyFirst = Provider.of<BlockSafety>(context);
   final theVariableruserName = Provider.of<UsernameProvider>(context);
   final thet = Provider.of<Themey>(context);
- 
     return gettingTheDataOfCurrentUser ? Scaffold(
       backgroundColor: thet.mode == 'Dark' ? Color.fromARGB(255, 47, 51, 54) : Colors.white,
       body: Center(
@@ -144,17 +148,30 @@ class _CommunityState extends State<Community> {
                   if (snapshot.hasError) {
                     return Text('Something went wrong');
                   }
-
+            
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Text("Loading");
                   }
 
+                         WidgetsBinding.instance!.addPostFrameCallback((_) {
+      _controller.jumpTo(_controller.position.maxScrollExtent+100);
+    });
+
                   return ListView(
+                    controller: _controller,
                     children:
                         snapshot.data!.docs.map((DocumentSnapshot document) {
                       Map<String, dynamic> data =
                           document.data()! as Map<String, dynamic>;
-
+            
+                    if (_controller.hasClients) {
+                          _controller.animateTo(
+             _controller.position.maxScrollExtent,
+             duration: Duration(milliseconds: 500),
+             curve: Curves.easeInOut,
+                   );
+                    }
+            
                       return data['uid'] == FirebaseAuth.instance.currentUser!.uid ? 
                       Container(
                         alignment: Alignment.centerLeft,
@@ -162,8 +179,8 @@ class _CommunityState extends State<Community> {
                           padding: EdgeInsets.all(7),
                           margin: EdgeInsets.fromLTRB(10,0,0,10),
                             constraints: BoxConstraints(
-    maxWidth: 300,
-  ),
+                   maxWidth: 300,
+                 ),
                           decoration: BoxDecoration(
                             color: Colors.lightBlue,
                             borderRadius: BorderRadius.circular(7),
@@ -186,15 +203,15 @@ class _CommunityState extends State<Community> {
                           child: Text('${data['msgOwner']}: ${data['msgContent']}', style: TextStyle(fontSize: 20))
                         ),
                       );
-
-
+            
+            
                     }).toList(),
                   );
-
+            
                 },
               )
           ),
-
+            
               
                   if (theDataOfCurrentUser['username'] != "AhmedZoala")
                   theVariableruserName.can ? TextField(
@@ -229,10 +246,26 @@ class _CommunityState extends State<Community> {
                               await sendMsg(msg);
                               }
                             }, icon: Icon(Icons.send, color: thet.mode == 'Dark' ? Colors.white : Colors.black))))
-
+            
         ],
        ),
-     )
+     ),
+ floatingActionButton: _isVisible == true ? Container(
+   alignment: Alignment.bottomRight,
+   margin: EdgeInsets.fromLTRB(0,0,0,35),
+   child: FloatingActionButton(
+    elevation: 0,
+    backgroundColor: Colors.transparent,
+    onPressed: () {
+      _controller!.animateTo(
+        _controller.position.maxScrollExtent + 1000,
+        duration: Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    },
+    child: Icon(Icons.arrow_downward, color: thet.mode == 'Dark' ? Colors.white : Colors.black),
+   ),
+ ) : SizedBox(),
 
     );
   }
